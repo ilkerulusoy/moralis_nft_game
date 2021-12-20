@@ -20,9 +20,10 @@ contract Token is ERC721, Ownable {
 
     }
 
-    function mint(uint8 damage, uint8 magic, uint8 endurance) public onlyOwner {
-        _safeMint(msg.sender, nextId);
+    function mint(uint8 damage, uint8 magic, uint256 endurance) public onlyOwner {
         _tokenDetails[nextId] = Pet(damage, magic, block.timestamp, endurance);
+        _safeMint(msg.sender, nextId);
+
         nextId++;
     }
 
@@ -31,8 +32,12 @@ contract Token is ERC721, Ownable {
         require(pet.lastMeal + pet.endurance > block.timestamp);
         pet.lastMeal = block.timestamp;
     }
+    
+    function getTokenDetails(uint256 tokenId) public view returns (Pet memory) {
+        return _tokenDetails[tokenId];
+    }
 
-    function _beforeTokenTransfer(
+    function _beforeTokenTransfer( 
         address from,
         address to,
         uint256 tokenId
