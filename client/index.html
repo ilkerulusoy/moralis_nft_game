@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>NFT Game</title>
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/moralis/dist/moralis.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="./style/style.css">
+  </head>
+
+  <body>
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1 class="display-4">Welcome to Feed Game</h1>
+            <div class="row">
+                <div class="col-md-8">
+                </div>
+                <div class="col-md-4">
+                    <button id="btn-login">Moralis Metamask Login</button>
+                    <button id="btn-logout">Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div id="game">
+            <div class="row">
+                <div class="col-md-8">
+                    <img src="assets/pet.png" id="pet_img">
+                </div>
+                <div class="col-md-4">
+                    <div>Id : <span id="pet_id"></span></div>
+                    <div>Damage : <span id="pet_damage"></span></div>
+                    <div>Magic : <span id="pet_magic"></span></div>
+                    <div>Endurance : <span id="pet_endurance"></span></div>
+                    <div>Time to startvation : <span id="pet_starvation_time"></span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="./scripts/main.js"></script>
+  </body>
+</html>
