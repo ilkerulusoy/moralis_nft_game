@@ -1,7 +1,7 @@
 /** Connect to Moralis server */
 const serverUrl = "https://bnxgs8otj3kp.usemoralis.com:2053/server";
 const appId = "micWkJVwFOayEP6ZdSSZB61cjwn8756q9yQy2Xqh";
-const CONTRACT_ADDRESS = "0xae59E4fc39057DaEB320c762fb44d92B6B65D7f7";
+const CONTRACT_ADDRESS = "0xe7d8810ed404F6e1e629F82538Dd3266c1CA3489";
 Moralis.start({ serverUrl, appId });
 
 let Pet = class {
