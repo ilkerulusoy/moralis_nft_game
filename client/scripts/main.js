@@ -1,7 +1,7 @@
 /** Connect to Moralis server */
 const serverUrl = "https://bnxgs8otj3kp.usemoralis.com:2053/server";
 const appId = "micWkJVwFOayEP6ZdSSZB61cjwn8756q9yQy2Xqh";
-const CONTRACT_ADDRESS = "0xF61FB7CFd88b5751f93963E29B88dE6fb2E6B984";
+const CONTRACT_ADDRESS = "0xae59E4fc39057DaEB320c762fb44d92B6B65D7f7";
 Moralis.start({ serverUrl, appId });
 
 let Pet = class {
@@ -57,14 +57,19 @@ async function renderGame() {
         $('#game').show();
         $('#btn-login').hide();
 
-        let petId = 0;
         window.web3 = await Moralis.enableWeb3();
         let abi = await getAbi();
         let contract = new web3.eth.Contract(abi, CONTRACT_ADDRESS);
         console.log(ethereum.selectedAddress);
-        let data = await contract.methods.getTokenDetails(petId).call({from: ethereum.selectedAddress});
-        let pet = new Pet(petId, data.damage, data.magic, data.lastMeal, data.endurance);
-        renderPet(pet);
+        let petList = await contract.methods.getAllTokensForUser(ethereum.selectedAddress).call({from: ethereum.selectedAddress});
+        console.log(petList);
+        $('#pet-row').empty();
+        petList.forEach(async (petId) => {
+            let data = await contract.methods.getTokenDetails(petId).call({from: ethereum.selectedAddress});
+            let pet = new Pet(petId, data.damage, data.magic, data.lastMeal, data.endurance);
+            renderPet(pet);
+        })
+        $('#game').show();
     } else {
         $('#game').hide();
         $('#btn-login').show();
@@ -72,20 +77,38 @@ async function renderGame() {
 }
 
 function renderPet(pet){
-    $('#pet_id').html(pet.id);
-    $('#pet_damage').html(pet.damage);
-    $('#pet_magic').html(pet.magic);
-    $('#pet_endurance').html(pet.endurance);
-    $('#btn-feed').attr('data-pet-id', pet.id);
 
     let deathTime = new Date((parseInt(pet.lastMeal) + parseInt(pet.endurance)) * 1000 );
     let now = new Date();
+    let dateStr = '';
 
     if (now >  deathTime) {
-        $('#pet_starvation_time').html('<b>DEAD</b>');
+        dateStr = '<b>DEAD</b>';
     } else {
-        $('#pet_starvation_time').html(deathTime);
+        dateStr = deathTime;
     }
+
+    var htmlString = `
+    <div class="col-md-4 card">
+        <img class="card-img-top pet_img" src="assets/pet.png" id="pet_img">
+        <div class="card-body">
+            <div>Id : <span class="pet_id">${pet.id}</span></div>
+            <div>Damage : <span class="pet_damage">${pet.damage}</span></div>
+            <div>Magic : <span class="pet_magic">${pet.magic}</span></div>
+            <div>Endurance : <span class="pet_endurance">${pet.endurance}</span></div>
+            <div>Time to startvation : <span class="pet_starvation_time">${dateStr}</span></div>
+            <button id="pet_${pet.id}" data-pet-id="${pet.id}" class="btn btn-primary btn-block btn-feed">Feed</button>
+        </div>
+    </div>
+    `;
+
+    let element = $.parseHTML(htmlString);
+    $('#pet-row').append(element);
+
+    $(`#pet_${pet.id}`).click(() => {
+        console.log('feeed');
+        feed(pet.id);
+    });
     
 }
 
@@ -111,11 +134,5 @@ async function feed(petId){
 
 document.getElementById("btn-login").onclick = login;
 document.getElementById("btn-logout").onclick = logOut;
-$('#btn-feed').click(() => {
-    console.log('feeed');
-    let petId = $('#btn-feed').attr('data-pet-id');
-    feed(petId);
-});
-
 
 init();
