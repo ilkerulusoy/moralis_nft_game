@@ -1,7 +1,7 @@
 /** Connect to Moralis server */
 const serverUrl = "https://bnxgs8otj3kp.usemoralis.com:2053/server";
 const appId = "micWkJVwFOayEP6ZdSSZB61cjwn8756q9yQy2Xqh";
-const CONTRACT_ADDRESS = "0x63ca4fC5103F3650034EDd1cE488867B66C2304c";
+const CONTRACT_ADDRESS = "0xF61FB7CFd88b5751f93963E29B88dE6fb2E6B984";
 Moralis.start({ serverUrl, appId });
 
 let Pet = class {
@@ -50,8 +50,10 @@ async function logOut() {
 }
 
 async function renderGame() {
+    console.log('render game');
     let user = getUser();
     if (user) {
+        console.log('user logged');
         $('#game').show();
         $('#btn-login').hide();
 
@@ -74,7 +76,17 @@ function renderPet(pet){
     $('#pet_damage').html(pet.damage);
     $('#pet_magic').html(pet.magic);
     $('#pet_endurance').html(pet.endurance);
-    $('#pet_starvation_time').html(pet.starvation_time);
+    $('#btn-feed').attr('data-pet-id', pet.id);
+
+    let deathTime = new Date((parseInt(pet.lastMeal) + parseInt(pet.endurance)) * 1000 );
+    let now = new Date();
+
+    if (now >  deathTime) {
+        $('#pet_starvation_time').html('<b>DEAD</b>');
+    } else {
+        $('#pet_starvation_time').html(deathTime);
+    }
+    
 }
 
 function getAbi(){
@@ -86,7 +98,24 @@ function getAbi(){
     })
 }
 
+async function feed(petId){
+    console.log(petId);
+    let abi = await getAbi();
+    let contract = new web3.eth.Contract(abi, CONTRACT_ADDRESS);
+    console.log(ethereum.selectedAddress);
+    let data = await contract.methods.feed(petId).send({from: ethereum.selectedAddress}).on("receipt", ( () => {
+        console.log('done');
+        renderGame();
+    }))
+}
+
 document.getElementById("btn-login").onclick = login;
 document.getElementById("btn-logout").onclick = logOut;
+$('#btn-feed').click(() => {
+    console.log('feeed');
+    let petId = $('#btn-feed').attr('data-pet-id');
+    feed(petId);
+});
+
 
 init();

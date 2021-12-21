@@ -9,4 +9,7 @@ module.exports = async function (deployer) {
   //await tokenInstance.mint(400,200,100000);
   let pet = await tokenInstance.getTokenDetails(0);
   console.log(pet);
+  await tokenInstance.feed(0);
+  let pet2 = await tokenInstance.getTokenDetails(0);
+  console.log(pet2);
 };
