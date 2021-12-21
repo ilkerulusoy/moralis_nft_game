@@ -37,6 +37,25 @@ contract Token is ERC721, Ownable {
         return _tokenDetails[tokenId];
     }
 
+    function getAllTokensForUser(address user) public view returns (uint256[] memory) {
+        uint256 tokenCount = balanceOf(user);
+        if(tokenCount == 0) {
+            return new uint256[](0);
+        } else {
+            uint[] memory result = new uint256[](tokenCount);
+            uint256 totalPets = nextId; 
+            uint256 resultIndex = 0;
+            uint256 i;
+            for(i = 0; i < totalPets; i++) {
+                if(ownerOf(i) == user) {
+                    result[resultIndex] = i;
+                    resultIndex++;
+                }
+            }
+            return result;
+        }
+    }
+
     function _beforeTokenTransfer( 
         address from,
         address to,
